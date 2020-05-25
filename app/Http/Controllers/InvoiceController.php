@@ -14,7 +14,12 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        //
+        $invoices = auth()->user()->invoices()->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => $invoices
+        ]);
     }
 
     /**
@@ -35,7 +40,20 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'user_id' => 'required',
+            'treatment_id' => 'required',
+            'waktu_masuk' => 'required',
+            'total' => 'required',
+            'status' => 'required'
+        ]);
+
+        $invoice = $request->all();
+        $inv = Invoice::create($invoice);
+        $inv->save();
+        if ($inv) {
+            return response(['data' => new Invoice($invoice)], 200);
+        }
     }
 
     /**
@@ -44,9 +62,14 @@ class InvoiceController extends Controller
      * @param  \App\Invoice  $invoice
      * @return \Illuminate\Http\Response
      */
-    public function show(Invoice $invoice)
+    public function show($id)
     {
-        //
+        $invoice = Invoice::findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'data' => $invoice
+        ]);
     }
 
     /**
@@ -67,9 +90,25 @@ class InvoiceController extends Controller
      * @param  \App\Invoice  $invoice
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Invoice $invoice)
+    public function update(Request $request, $id)
     {
-        //
+        $invoice = Invoice::findOrFail($id);
+
+        $invoice->user_id = $request->user_id;
+        $invoice->treatment_id = $request->treatment_id;
+        $invoice->waktu_masuk = $request->waktu_masuk;
+        $invoice->total = $request->total;
+        $invoice->status = $request->status;
+
+        $invoice->save();
+
+        return response()->json(
+            [
+                'success' => true,
+                'message' => 'Updated Successfully',
+            ],
+            200
+        );
     }
 
     /**
@@ -78,8 +117,12 @@ class InvoiceController extends Controller
      * @param  \App\Invoice  $invoice
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Invoice $invoice)
+    public function destroy($id)
     {
-        //
+        $invoice = Invoice::findOrFail($id);
+
+        $invoice->delete();
+
+        return response()->json(['success' => true, 'message' => 'Invoice Deleted']);
     }
 }

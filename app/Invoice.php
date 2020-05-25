@@ -13,7 +13,7 @@ class Invoice extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function treatment()
+    public function treatments()
     {
         return $this->belongsTo(Treatment::class);
     }

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Invoice;
+use App\Treatment;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Validator;
 
 
 class UserController extends Controller
@@ -16,9 +19,17 @@ class UserController extends Controller
         if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
             $user = Auth::user();
             $success['token'] = $user->createToken('deekey')->accessToken;
-            return response()->json(['success' => $success, 'message' => 'Login Successfully', $this->successStatus]);
+            return response()->json(
+                [
+                    'success' => $success,
+                    'message' => 'Login Successfully'
+                ],
+                $this->successStatus
+            );
         } else {
-            return response()->json(['error' => 'Unauthorised'], 401);
+            return response()->json([
+                'error' => 'Unauthorised'
+            ], 401);
         }
     }
 
@@ -37,25 +48,71 @@ class UserController extends Controller
             ]
         );
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            return response()->json([
+                'error' => $validator->errors()
+            ], 401);
         }
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
-        $success['token'] = $user->createToken('deekey')->accessToken;
         $success['username'] = $user->username;
-        return response()->json(['success' => $success, 'message' => 'Registration Successfully', $this->successStatus]);
+        $success['token'] = $user->createToken('deekey')->accessToken;
+        return response()->json(
+            [
+                'success' => $success,
+                'message' => 'Registration Successfully'
+            ],
+            $this->successStatus
+        );
     }
 
     public function details()
     {
         $user = Auth::user();
-        return response()->json(['success' => $user, $this->successStatus]);
+        return response()->json(
+            [
+                'success' => $user
+            ],
+            $this->successStatus
+        );
     }
 
     public function logout()
     {
         Auth::logout();
-        return response()->json(['success' => true, 'message' => 'Logout Succesfully', $this->successStatus]);
+        return response()->json(
+            [
+                'success' => true,
+                'message' => 'Logout Succesfully'
+            ],
+            $this->successStatus
+        );
+    }
+
+    public function update(Request $request, $id)
+    {
+        $input = User::findOrFail($id);
+
+        $input->email = $request->email;
+        $input->username = $request->username;
+        $input->address = $request->address;
+        $input->city = $request->city;
+        $input->phone_number = $request->phone_number;
+        $input->avatar = $request->avatar;
+
+        $input->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Customer Updated'
+        ]);
+    }
+
+    public function destroy()
+    {
+        $user = Auth::user();
+        return response()->json([
+            'success' => $user, 'message' => 'User Deleted'
+        ], $this->successStatus);
     }
 }

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TreatmentCollection;
+use App\Invoice;
 use App\Treatment;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class TreatmentController extends Controller
 {
@@ -14,7 +17,7 @@ class TreatmentController extends Controller
      */
     public function index()
     {
-        //
+        return Treatment::all();
     }
 
     /**
@@ -35,7 +38,20 @@ class TreatmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'jenis_treatment' => 'required',
+            'harga' => 'required',
+            'waktu_pengerjaan' => 'required',
+            'qty' => 'required',
+            'subtotal' => 'required'
+        ]);
+
+        $treatment = $request->all();
+        $treat = Treatment::create($treatment);
+        $treat->save();
+        if ($treat) {
+            return response(['data' => new Treatment($treatment)], 200);
+        }
     }
 
     /**
@@ -44,9 +60,14 @@ class TreatmentController extends Controller
      * @param  \App\Treatment  $treatment
      * @return \Illuminate\Http\Response
      */
-    public function show(Treatment $treatment)
+    public function show($id)
     {
-        //
+        $treatment = Treatment::findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'data' => $treatment
+        ]);
     }
 
     /**
@@ -67,9 +88,25 @@ class TreatmentController extends Controller
      * @param  \App\Treatment  $treatment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Treatment $treatment)
+    public function update(Request $request, $id)
     {
-        //
+        $treatment = Treatment::findOrFail($id);
+
+        $treatment->jenis_treatment = $request->jenis_treatment;
+        $treatment->harga = $request->harga;
+        $treatment->waktu_pengerjaan = $request->waktu_pengerjaan;
+        $treatment->qty = $request->qty;
+        $treatment->subtotal = $request->subtotal;
+
+        $treatment->save();
+
+        return response()->json(
+            [
+                'success' => true,
+                'message' => 'Updated Successfully'
+            ],
+            200
+        );
     }
 
     /**
@@ -78,8 +115,12 @@ class TreatmentController extends Controller
      * @param  \App\Treatment  $treatment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Treatment $treatment)
+    public function destroy($id)
     {
-        //
+        $treatment = Treatment::findOrFail($id);
+
+        $treatment->delete();
+
+        return response()->json(['success' => true, 'message' => 'Treatment Deleted']);
     }
 }
