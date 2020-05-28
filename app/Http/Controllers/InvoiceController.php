@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Invoice;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InvoiceController extends Controller
 {
@@ -14,7 +15,11 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        $invoices = auth()->user()->invoices()->get();
+
+        $invoices = auth()->user()->invoices()
+            ->leftJoin('treatments', 'invoices.treatment_id', '=', 'treatments.id')
+            ->select('invoices.*', 'treatments.subtotal')
+            ->get();
 
         return response()->json([
             'success' => true,
@@ -44,13 +49,29 @@ class InvoiceController extends Controller
             'user_id' => 'required',
             'treatment_id' => 'required',
             'waktu_masuk' => 'required',
-            'total' => 'required',
             'status' => 'required'
         ]);
 
-        $invoice = $request->all();
+        $invoices = auth()->user()->invoices()
+            ->leftJoin('treatments', 'invoices.treatment_id', '=', 'treatments.id')
+            ->select('invoices.*', 'treatments.subtotal')
+            ->get();
+
+        $res = 0;
+        foreach ($invoices as $invs) {
+            $res .= $invs->subtotal;
+        }
+
+
+        $invoice['user_id'] = $request->user_id;
+        $invoice['treatment_id'] = $request->treatment_id;
+        $invoice['waktu_masuk'] = $request->waktu_masuk;
+        $invoice['total'] = $res;
+        $invoice['status'] = $request->status;
         $inv = Invoice::create($invoice);
         $inv->save();
+
+
         if ($inv) {
             return response(['data' => new Invoice($invoice)], 200);
         }

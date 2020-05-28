@@ -43,10 +43,14 @@ class TreatmentController extends Controller
             'harga' => 'required',
             'waktu_pengerjaan' => 'required',
             'qty' => 'required',
-            'subtotal' => 'required'
         ]);
 
-        $treatment = $request->all();
+        $treatment['jenis_treatment'] = $request->jenis_treatment;
+        $treatment['harga'] = $request->harga;
+        $treatment['waktu_pengerjaan'] = $request->waktu_pengerjaan;
+        $treatment['qty'] = $request->qty;
+        $treatment['subtotal'] = $request->harga * $request->qty;
+
         $treat = Treatment::create($treatment);
         $treat->save();
         if ($treat) {
@@ -92,14 +96,13 @@ class TreatmentController extends Controller
     {
         $treatment = Treatment::findOrFail($id);
 
-        $treatment->jenis_treatment = $request->jenis_treatment;
-        $treatment->harga = $request->harga;
-        $treatment->waktu_pengerjaan = $request->waktu_pengerjaan;
-        $treatment->qty = $request->qty;
-        $treatment->subtotal = $request->subtotal;
+        $treatment['jenis_treatment'] = $request->jenis_treatment;
+        $treatment['harga'] = $request->harga;
+        $treatment['waktu_pengerjaan'] = $request->waktu_pengerjaan;
+        $treatment['qty'] = $request->qty;
+        $treatment['subtotal'] = $request->harga * $request->qty;
 
         $treatment->save();
-
         return response()->json(
             [
                 'success' => true,
