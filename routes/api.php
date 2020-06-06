@@ -18,14 +18,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('login', 'UserController@login')->name('login');
-Route::post('register', 'UserController@register')->name('register');
+Route::post('login', 'UserController@login');
+Route::post('register', 'UserController@register');
 
 Route::group(['middleware' => 'auth:api'], function () {
+
     Route::put('user/update', 'UserController@update')->name('user.update');
     Route::post('detail', 'UserController@details')->name('user.detail');
     Route::delete('user/delete', 'UserController@destroy')->name('user.destroy');
-    Route::get('logout', 'UserController@logout')->name('logout');
+    Route::post('logout', 'UserController@logout');
 
     Route::get('treatment', 'TreatmentController@index')->name('treatment.index');
     Route::get('treatment/{id}', 'TreatmentController@show')->name('treatment.show');

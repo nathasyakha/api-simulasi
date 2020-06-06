@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\TreatmentCollection;
-use App\Invoice;
 use App\Treatment;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Yajra\DataTables\Facades\DataTables;
 
 class TreatmentController extends Controller
 {
@@ -17,7 +15,21 @@ class TreatmentController extends Controller
      */
     public function index()
     {
-        return Treatment::all();
+        $treatment = Treatment::all();
+        if (request()->ajax()) {
+            return DataTables::of($treatment)
+                ->addIndexColumn()
+                ->addColumn('action', function ($data) {
+
+                    $button = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Edit" class="edit btn btn-info btn-sm editInvoice"><i class="far fa-edit"></i> Edit</a>';
+                    $button .= '&nbsp;&nbsp;';
+                    $button .= '<button type="button" name="delete" id="' . $data->id . '" class="delete btn btn-danger btn-sm " ><i class="far fa-trash-alt"></i> Delete</button>';
+                    return $button;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        return view('treatment');
     }
 
     /**

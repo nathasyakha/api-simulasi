@@ -2,34 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Invoice;
-use App\Treatment;
 use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Validator;
-
+use Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class UserController extends Controller
 {
     public $successStatus = 200;
 
-    public function login()
+    public function login(Request $request)
     {
-        if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
             $success['token'] = $user->createToken('deekey')->accessToken;
-            return response()->json(
-                [
-                    'success' => $success,
-                    'message' => 'Login Successfully'
-                ],
-                $this->successStatus
-            );
+            if ($request->ajax()) {
+                return route('home');
+            }
         } else {
-            return response()->json([
-                'error' => 'Unauthorised'
-            ], 401);
+            return back()->with('message', 'Account is not Valid!');
         }
     }
 
@@ -38,19 +30,21 @@ class UserController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'email' => 'required|email',
-                'username' => 'required',
-                'password' => 'required',
+                'email' => 'required|email|unique:users,email',
+                'username' => 'required|unique:users',
+                'password' => 'required|min:6',
                 'address' => 'required',
                 'city' => 'required',
-                'phone_number' => 'required',
+                'phone_number' => 'required|min:7|max:15',
                 'avatar' => 'required'
             ]
         );
         if ($validator->fails()) {
-            return response()->json([
-                'error' => $validator->errors()
-            ], 401);
+            $response = [
+                'success' => false,
+                'message' => 'Validation Error', $validator->errors(),
+            ];
+            return response()->json($response, 404);
         }
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
@@ -80,13 +74,7 @@ class UserController extends Controller
     public function logout()
     {
         Auth::logout();
-        return response()->json(
-            [
-                'success' => true,
-                'message' => 'Logout Succesfully'
-            ],
-            $this->successStatus
-        );
+        return redirect('/');
     }
 
     public function update(Request $request, $id)

@@ -16,10 +16,7 @@ class InvoiceController extends Controller
     public function index()
     {
 
-        $invoices = auth()->user()->invoices()
-            ->leftJoin('treatments', 'invoices.treatment_id', '=', 'treatments.id')
-            ->select('invoices.*', 'treatments.subtotal')
-            ->get();
+        $invoices = Invoice::where('user_id', auth()->user()->id)->get();
 
         return response()->json([
             'success' => true,
@@ -46,7 +43,7 @@ class InvoiceController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'required',
+
             'treatment_id' => 'required',
             'waktu_masuk' => 'required',
             'status' => 'required'
@@ -59,11 +56,11 @@ class InvoiceController extends Controller
 
         $res = 0;
         foreach ($invoices as $invs) {
-            $res .= $invs->subtotal;
+            $res += $invs->subtotal;
         }
 
 
-        $invoice['user_id'] = $request->user_id;
+        $invoice['user_id'] = auth()->user()->id;
         $invoice['treatment_id'] = $request->treatment_id;
         $invoice['waktu_masuk'] = $request->waktu_masuk;
         $invoice['total'] = $res;
