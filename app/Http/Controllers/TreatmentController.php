@@ -20,11 +20,11 @@ class TreatmentController extends Controller
             return DataTables::of($treatment)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
+                    $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Edit" class="edit btn btn-primary btn-sm edit"><i class="glyphicon glyphicon-edit"></i> Edit</a>';
+                    $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Delete" class="btn btn-danger btn-sm delete"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
 
-                    $button = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Edit" class="edit btn btn-info btn-sm editInvoice"><i class="far fa-edit"></i> Edit</a>';
-                    $button .= '&nbsp;&nbsp;';
-                    $button .= '<button type="button" name="delete" id="' . $data->id . '" class="delete btn btn-danger btn-sm " ><i class="far fa-trash-alt"></i> Delete</button>';
-                    return $button;
+
+                    return $btn;
                 })
                 ->rawColumns(['action'])
                 ->make(true);
@@ -55,6 +55,7 @@ class TreatmentController extends Controller
             'harga' => 'required',
             'waktu_pengerjaan' => 'required',
             'qty' => 'required',
+
         ]);
 
         $treatment['jenis_treatment'] = $request->jenis_treatment;
@@ -66,7 +67,7 @@ class TreatmentController extends Controller
         $treat = Treatment::create($treatment);
         $treat->save();
         if ($treat) {
-            return response(['data' => new Treatment($treatment)], 200);
+            return response()->json($treatment);
         }
     }
 
@@ -78,12 +79,6 @@ class TreatmentController extends Controller
      */
     public function show($id)
     {
-        $treatment = Treatment::findOrFail($id);
-
-        return response()->json([
-            'success' => true,
-            'data' => $treatment
-        ]);
     }
 
     /**
@@ -92,9 +87,16 @@ class TreatmentController extends Controller
      * @param  \App\Treatment  $treatment
      * @return \Illuminate\Http\Response
      */
-    public function edit(Treatment $treatment)
+    public function edit($id)
     {
-        //
+        if (request()->ajax()) {
+            $treatment = Treatment::findOrFail($id);
+
+            return response()->json([
+                'success' => true,
+                'data' => $treatment
+            ]);
+        }
     }
 
     /**
@@ -106,6 +108,14 @@ class TreatmentController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'jenis_treatment' => 'required',
+            'harga' => 'required',
+            'waktu_pengerjaan' => 'required',
+            'qty' => 'required',
+
+        ]);
+
         $treatment = Treatment::findOrFail($id);
 
         $treatment['jenis_treatment'] = $request->jenis_treatment;

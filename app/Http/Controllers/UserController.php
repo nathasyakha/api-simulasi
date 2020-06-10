@@ -17,9 +17,7 @@ class UserController extends Controller
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
             $success['token'] = $user->createToken('deekey')->accessToken;
-            if ($request->ajax()) {
-                return route('home');
-            }
+            return route('home');
         } else {
             return back()->with('message', 'Account is not Valid!');
         }

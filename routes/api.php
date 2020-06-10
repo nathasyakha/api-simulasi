@@ -29,14 +29,14 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('logout', 'UserController@logout');
 
     Route::get('treatment', 'TreatmentController@index')->name('treatment.index');
-    Route::get('treatment/{id}', 'TreatmentController@show')->name('treatment.show');
+    Route::get('treatment/edit/{id}', 'TreatmentController@edit')->name('treatment.edit');
     Route::post('treatment', 'TreatmentController@store')->name('treatment.store');
-    Route::put('treatment/{id}', 'TreatmentController@update')->name('treatment.update');
-    Route::delete('treatment/{id}', 'TreatmentController@destroy')->name('treatment.destroy');
+    Route::post('treatment/update/{id}', 'TreatmentController@update')->name('treatment.update');
+    Route::delete('treatment/delete/{id}', 'TreatmentController@destroy')->name('treatment.destroy');
 
     Route::get('invoice', 'InvoiceController@index')->name('invoice.index');
-    Route::get('invoice/{id}', 'InvoiceController@show')->name('invoice.show');
+    Route::get('invoice/edit/{id}', 'InvoiceController@show')->name('invoice.show');
     Route::post('invoice', 'InvoiceController@store')->name('invoice.store');
-    Route::put('invoice/{id}', 'InvoiceController@update')->name('invoice.update');
-    Route::delete('invoice/{id}', 'InvoiceController@destroy')->name('invoice.destroy');
+    Route::put('invoice/update/{id}', 'InvoiceController@update')->name('invoice.update');
+    Route::delete('invoice/delete/{id}', 'InvoiceController@destroy')->name('invoice.destroy');
 });

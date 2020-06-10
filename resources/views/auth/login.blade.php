@@ -120,7 +120,7 @@
                 $.ajax({
                     type: "POST",
                     url: "{{route('login')}}",
-                    headers: header,
+
                     data: {
                         "email": $('#email').val(),
                         "password": $('#password').val(),

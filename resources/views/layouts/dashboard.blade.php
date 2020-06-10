@@ -78,7 +78,7 @@
                                 </p>
                             </a>
                         <li class="nav-item">
-                            <a href="{{route('invoice.index')}}" class="nav-link">
+                            <a href="{{route('invoice')}}" class="nav-link">
                                 <i class="nav-icon fas fa-file-invoice"></i>
                                 <p>Invoice</p>
                             </a>
@@ -113,18 +113,18 @@
     <!-- ./wrapper -->
 
     <!-- jQuery -->
-    <script type="text/javascript" src="../../plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script type="text/javascript" src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="{{asset('/plugins/jquery/jquery.min.js')}}"></script>
+    <!-- Bootstrap -->
+    <script src="{{asset('/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <!-- DataTables -->
-    <script type="text/javascript" src="../../plugins/datatables/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="../../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script type="text/javascript" src="../../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script type="text/javascript" src="../../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
     <!-- AdminLTE App -->
-    <script type="text/javascript" src="../../dist/js/adminlte.min.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
+    <script type="text/javascript" src="{{asset('/dist/js/adminlte.js')}}"></script>
+    <script src="{{asset('jquery.validate.min.js')}}" integrity="sha256-sPB0F50YUDK0otDnsfNHawYmA5M0pjjUf4TvRJkGFrI=" crossorigin="anonymous"></script>
+    <script src="{{asset('sweetalert2@9.js')}}"></script>
     @stack('script')
 </body>
 

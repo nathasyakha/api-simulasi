@@ -25,7 +25,7 @@
             <div class="card">
                 <div class="card-header">
                     <h4>
-                        <a onclick="addForm()" class="btn btn-primary pull-right" style="margin-top: -8px;">Add Treatment</a>
+                        <a href="javascript:void(0)" id="add-data" class="btn btn-outline-primary pull-right" style="margin-top: 8px;">Add Treatment</a>
                     </h4>
                 </div>
                 <!-- /.card-header -->
@@ -33,7 +33,6 @@
                     <table id="treat-table" class="table table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>No.</th>
                                 <th>Jenis Treatment</th>
                                 <th>Harga</th>
                                 <th>Waktu Pengerjaan</th>
@@ -49,16 +48,20 @@
         </div>
     </div>
 </section>
-<div class="modal" id="modal-form" tabindex="1" role="dialog" aria-hidden="true" data-backdrop="static">
+
+
+<!---addModal--->
+<div class="modal fade" id="modal-form" tabindex="1" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form id="form-treat" method="post" class="form-horizontal" data-toggle="validator" enctype="multipart/form-data">
-                {{ csrf_field() }} {{ method_field('POST') }}
+                {{ csrf_field() }}
                 <div class="modal-header">
+                    <h3 class="modal-title" id="modaltitle"></h3>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true"> &times; </span>
                     </button>
-                    <h3 class="modal-title"></h3>
+
                 </div>
 
                 <div class="modal-body">
@@ -94,18 +97,10 @@
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label for="name" class="col-md-3 control-label">Subtotal</label>
-                        <div class="col-md-6">
-                            <input type="text" id="subtotal" name="subtotal" class="form-control" autofocus required>
-                            <span class="help-block with-errors"></span>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btn-save">Submit</button>
+                    <button type="submit" id="saveBtn" class="btn btn-primary">Submit</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 </div>
 
@@ -113,6 +108,7 @@
         </div>
     </div>
 </div>
+<!---EndModal--->
 
 @endsection
 
@@ -120,6 +116,12 @@
 @push('script')
 
 <script type="text/javascript">
+    const tokenData = JSON.parse(window.localStorage.getItem('authUser'))
+    const header = {
+        "Accept": "application/json",
+        "Authorization": "Bearer " + tokenData.access_token
+    }
+
     $(document).ready(function() {
         $('#treat-table').DataTable({
             proccessing: true,
@@ -127,12 +129,9 @@
             ajax: {
                 url: "{{route('treatment.index')}}",
                 type: 'GET',
+                headers: header
             },
             columns: [{
-                    data: 'id',
-                    name: 'id'
-                },
-                {
                     data: 'jenis_treatment',
                     name: 'jenis_treatment'
                 },
@@ -157,6 +156,121 @@
                     name: 'action'
                 }
             ]
+        });
+    });
+
+    $('#add-data').click(function() {
+        $('#saveBtn').val("Add");
+        $('#id').val('');
+        $('#form-treat').trigger("reset");
+        $('#modaltitle').html("Add New Treatment");
+        $('#modal-form').modal('show');
+    });
+
+    $('body').on('click', '.edit', function() {
+        var id = $(this).data('id');
+        $.ajax({
+            url: "{{url('api/treatment/edit')}}" + "/" + id,
+            type: "GET",
+            headers: header,
+            dataType: "JSON",
+            success: function(data) {
+                $('#jenis_treatment').val(data.jenis_treatment);
+                $('#harga').val(data.harga);
+                $('#waktu_pengerjaan').val(data.waktu_pengerjaan);
+                $('#qty').val(data.qty);
+
+                $('#modaltitle').html("Edit Treatment");
+                $('#saveBtn').val("Edit");
+                $('#modal-form').modal('show');
+            }
+        })
+    });
+
+    if ($("#form-treat").length > 0) {
+        var id = $(this).attr('id');
+        $("#form-treat").validate({
+
+            submitHandler: function(form) {
+
+                var actionType = $('#saveBtn').val();
+                $('#saveBtn').html('Saving..');
+
+
+                if ($('#saveBtn').val() == 'Add') {
+                    url = "{{ route('treatment.store') }}";
+                } else {
+                    url = "{{url('api/treatment/update')}}" + "/" + id;
+                }
+
+                $.ajax({
+                    data: $('#form-treat').serialize(),
+                    url: url,
+                    type: "POST",
+                    headers: header,
+                    dataType: 'json',
+                    success: function(data) { //jika berhasil 
+                        $('#form-treat').trigger("reset");
+                        $('#modal-form').modal('hide');
+                        $('#saveBtn').html('Submit');
+                        var oTable = $('#treat-table').dataTable();
+                        oTable.fnDraw(false); //reset datatable
+                        Swal.fire(
+                            'Done!',
+                            'Data Saved Successfully!',
+                            'success')
+                    },
+                    error: function(data) {
+                        console.log('Error:', data);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!',
+                        })
+                    }
+                });
+
+            }
+        })
+    }
+
+    $(document).on('click', '.delete', function() {
+        Swal.fire({
+            title: 'Are you sure ?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.value) {
+                var id = $(this).data('id');
+                $.ajax({
+                    type: "DELETE",
+                    url: "{{ url('api/treatment/delete') }}" + '/' + id,
+                    headers: header,
+                    success: function(data) {
+                        var oTable = $('#treat-table').dataTable();
+                        oTable.fnDraw(false);
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        )
+                    },
+                    error: function(data) {
+                        console.log('Error:', data);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!',
+                        })
+                    }
+                });
+            } else {
+                Swal.fire('Your data is safe');
+            }
         });
     });
 </script>

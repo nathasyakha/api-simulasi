@@ -72,7 +72,7 @@
                         @endif
                     </div>
                     <div class="form-group {{$errors->has('phone_number') ? 'has-error' : ''}} has-feedback">
-                        <input id="phone_number" value="{{old('avatar')}}" type="tel" name="phone_number" class="form-control" placeholder="Phone Number">
+                        <input id="phone_number" value="{{old('avatar')}}" type="text" name="phone_number" class="form-control" placeholder="Phone Number">
                         @if($errors->has('phone_number'))
                         <span class="help-block">
                             <strong>{{$errors->first('phone_number')}}</strong>

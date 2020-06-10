@@ -36,4 +36,5 @@ Route::post('register', 'UserController@register')->name('register');
 Route::get('logout', 'UserController@logout');
 
 Route::get('treatment', 'TreatmentController@index')->name('treatment');
+Route::get('invoice', 'InvoiceController@index')->name('invoice');
 Route::get('/home', 'HomeController@index')->name('home');
