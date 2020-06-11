@@ -20,10 +20,8 @@ class TreatmentController extends Controller
             return DataTables::of($treatment)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Edit" class="edit btn btn-primary btn-sm edit"><i class="glyphicon glyphicon-edit"></i> Edit</a>';
-                    $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Delete" class="btn btn-danger btn-sm delete"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
-
-
+                    $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Edit" class="edit btn btn-primary btn-sm edit"><i class="far fa-edit"></i> Edit</a>';
+                    $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Delete" class="btn btn-danger btn-sm delete"><i class="far fa-trash-alt"></i> Delete</a>';
                     return $btn;
                 })
                 ->rawColumns(['action'])
@@ -90,7 +88,7 @@ class TreatmentController extends Controller
     public function edit($id)
     {
         if (request()->ajax()) {
-            $treatment = Treatment::findOrFail($id);
+            $treatment = Treatment::find($id);
 
             return response()->json([
                 'success' => true,
@@ -116,7 +114,7 @@ class TreatmentController extends Controller
 
         ]);
 
-        $treatment = Treatment::findOrFail($id);
+        $treatment = Treatment::find($id);
 
         $treatment['jenis_treatment'] = $request->jenis_treatment;
         $treatment['harga'] = $request->harga;

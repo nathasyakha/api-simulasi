@@ -33,6 +33,7 @@
                     <table id="treat-table" class="table table-bordered table-hover">
                         <thead>
                             <tr>
+                                <th>No.</th>
                                 <th>Jenis Treatment</th>
                                 <th>Harga</th>
                                 <th>Waktu Pengerjaan</th>
@@ -67,7 +68,7 @@
                 <div class="modal-body">
                     <input type="hidden" id="id" name="id">
                     <div class="form-group">
-                        <label for="name" class="col-md-3 control-label">Jenis Treatment</label>
+                        <label for="jenis_treatment" class="col-md-3 control-label">Jenis Treatment</label>
                         <div class="col-md-6">
                             <input type="text" id="jenis_treatment" name="jenis_treatment" class="form-control" autofocus required>
                             <span class="help-block with-errors"></span>
@@ -75,7 +76,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="name" class="col-md-3 control-label">Harga</label>
+                        <label for="harga" class="col-md-3 control-label">Harga</label>
                         <div class="col-md-6">
                             <input type="text" id="harga" name="harga" class="form-control" autofocus required>
                             <span class="help-block with-errors"></span>
@@ -83,7 +84,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="name" class="col-md-3 control-label">Waktu Pengerjaan</label>
+                        <label for="waktu_pengerjaan" class="col-md-3 control-label">Waktu Pengerjaan</label>
                         <div class="col-md-6">
                             <input type="text" id="waktu_pengerjaan" name="waktu_pengerjaan" class="form-control" autofocus required>
                             <span class="help-block with-errors"></span>
@@ -91,7 +92,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="name" class="col-md-3 control-label">Quantity</label>
+                        <label for="qty" class="col-md-3 control-label">Quantity</label>
                         <div class="col-md-6">
                             <input type="text" id="qty" name="qty" class="form-control" autofocus required>
                             <span class="help-block with-errors"></span>
@@ -132,6 +133,10 @@
                 headers: header
             },
             columns: [{
+                    data: 'id',
+                    name: 'id'
+                },
+                {
                     data: 'jenis_treatment',
                     name: 'jenis_treatment'
                 },

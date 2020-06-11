@@ -49,13 +49,7 @@ class UserController extends Controller
         $user = User::create($input);
         $success['username'] = $user->username;
         $success['token'] = $user->createToken('deekey')->accessToken;
-        return response()->json(
-            [
-                'success' => $success,
-                'message' => 'Registration Successfully'
-            ],
-            $this->successStatus
-        );
+        return view('auth.login');
     }
 
     public function details()

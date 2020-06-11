@@ -31,6 +31,7 @@
                 <p class="login-box-msg">Register a new membership</p>
 
                 <form action="{{route('register')}}" method="post">
+                    @csrf
                     <div class="form-group {{$errors->has('email') ? 'has-error' : ''}} has-feedback">
                         <input id="email" value="{{old('email')}}" type="email" name="email" class="form-control" placeholder="Email Address">
                         @if($errors->has('email'))
@@ -40,7 +41,7 @@
                         @endif
                     </div>
                     <div class="form-group {{$errors->has('username') ? 'has-error' : ''}} has-feedback">
-                        <input id="username" value="{{old('username')}}" type="text" name="name" class="form-control" placeholder="Username">
+                        <input id="username" value="{{old('username')}}" type="text" name="username" class="form-control" placeholder="Username">
                         @if($errors->has('username'))
                         <span class="help-block">
                             <strong>{{$errors->first('username')}}</strong>
@@ -109,6 +110,7 @@
     <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
     <script src="../../dist/js/adminlte.min.js"></script>
+    </script>
 </body>
 
 </html>

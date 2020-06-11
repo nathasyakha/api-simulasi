@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Invoice;
+use App\Treatment;
+use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class InvoiceController extends Controller
 {
@@ -15,13 +17,28 @@ class InvoiceController extends Controller
      */
     public function index()
     {
+        $invoices = auth()->user()->invoices()
+            ->leftJoin('treatments', 'invoices.treatment_id', '=', 'treatments.id')
+            ->leftJoin('users', 'invoices.user_id', '=', 'users.id')
+            ->select('invoices.*', 'treatments.jenis_treatment', 'users.username')
+            ->get();
+        $treatments = Treatment::all();
+        $users = User::all();
 
-        $invoices = Invoice::where('user_id', auth()->user()->id)->get();
+        if (request()->ajax()) {
+            return DataTables::of($invoices)
+                ->addIndexColumn()
+                ->addColumn('action', function ($data) {
+                    $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Edit" class="edit btn btn-primary btn-sm edit"><i class="far fa-edit"></i> Edit</a>';
+                    $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Delete" class="btn btn-danger btn-sm delete"><i class="far fa-trash-alt"></i> Delete</a>';
 
-        return response()->json([
-            'success' => true,
-            'message' => $invoices
-        ]);
+
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        return view('invoice.index', compact('treatments', 'users'));
     }
 
     /**

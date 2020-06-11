@@ -69,7 +69,12 @@
                     <div class="form-group">
                         <label for="name" class="col-md-3 control-label">Nama Customer</label>
                         <div class="col-md-6">
-                            <input type="text" id="nama" name="nama" class="form-control" autofocus required>
+                            <select type="text" id="user_id" name="user_id" class="form-control" autofocus required>
+                                <option value="0" disable="true" selected="true">=== Select User ===</option>
+                                @foreach ($users as $key => $user)
+                                <option value="{{$user->id}}">{{$user->username}}</option>
+                                @endforeach
+                            </select>
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
@@ -77,7 +82,12 @@
                     <div class="form-group">
                         <label for="name" class="col-md-3 control-label">Jenis Treatment</label>
                         <div class="col-md-6">
-                            <input type="text" id="jenis_treatment" name="jenis_treatment" class="form-control" autofocus required>
+                            <select type="text" id="treatment_id" name="treatment_id" class="form-control" autofocus required>
+                                <option value="0" disable="true" selected="true">=== Select Treatment ===</option>
+                                @foreach ($treatments as $key => $treatment)
+                                <option value="{{$treatment->id}}">{{$treatment->jenis_treatment}}</option>
+                                @endforeach
+                            </select>
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
@@ -132,12 +142,12 @@
                 headers: header
             },
             columns: [{
-                    data: 'user_id',
-                    name: 'user_id'
+                    data: 'username',
+                    name: 'username'
                 },
                 {
-                    data: 'treatment_id',
-                    name: 'treatment_id'
+                    data: 'jenis_treatment',
+                    name: 'jenis_treatment'
                 },
                 {
                     data: 'waktu_masuk',
@@ -198,9 +208,9 @@
 
 
                 if ($('#saveBtn').val() == 'Add') {
-                    url = "{{ route('inovice.store') }}";
+                    url = "{{ route('invoice.store') }}";
                 } else {
-                    url = "{{url('api/inovice/update')}}" + "/" + id;
+                    url = "{{url('api/invoice/update')}}" + "/" + id;
                 }
 
                 $.ajax({
