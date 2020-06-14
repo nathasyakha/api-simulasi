@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AdminLTE 3 | Registration Page</title>
+    <title>AdminLTE 3 | Login Page</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Font Awesome Icons -->
@@ -50,8 +50,8 @@
                     </div>
                     <div class="row">
                         <div class="col-8">
-                            <div class="icheck-primary">
-                                <input type="checkbox" name="remember" {{old('remember') ? 'checked' : ''}}>
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" name="remember" {{old('remember') ? 'checked' : ''}}>
                                 <label for="remember">
                                     Remember Me
                                 </label>
@@ -59,7 +59,7 @@
                         </div>
                         <!-- /.col -->
                         <div class="col-4">
-                            <a onclick="login()" class="btn btn-primary ">Sign In</a>
+                            <a onclick="login()" class="btn btn-primary btn-block">Sign In</a>
                         </div>
                         <!-- /.col -->
                     </div>

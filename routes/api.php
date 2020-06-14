@@ -31,11 +31,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('treatment', 'TreatmentController@index')->name('treatment.index');
     Route::get('treatment/edit/{id}', 'TreatmentController@edit')->name('treatment.edit');
     Route::post('treatment', 'TreatmentController@store')->name('treatment.store');
-    Route::post('treatment/update/{id}', 'TreatmentController@update')->name('treatment.update');
+    Route::put('treatment/update/{id}', 'TreatmentController@update')->name('treatment.update');
     Route::delete('treatment/delete/{id}', 'TreatmentController@destroy')->name('treatment.destroy');
 
     Route::get('invoice', 'InvoiceController@index')->name('invoice.index');
-    Route::get('invoice/edit/{id}', 'InvoiceController@show')->name('invoice.show');
+    Route::get('invoice/edit/{id}', 'InvoiceController@edit')->name('invoice.edit');
     Route::post('invoice', 'InvoiceController@store')->name('invoice.store');
     Route::put('invoice/update/{id}', 'InvoiceController@update')->name('invoice.update');
     Route::delete('invoice/delete/{id}', 'InvoiceController@destroy')->name('invoice.destroy');

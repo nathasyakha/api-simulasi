@@ -20,14 +20,14 @@ class TreatmentController extends Controller
             return DataTables::of($treatment)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Edit" class="edit btn btn-primary btn-sm edit"><i class="far fa-edit"></i> Edit</a>';
+                    $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Edit" class="edit btn btn-info btn-sm editForm"><i class="far fa-edit"></i> Edit</a>';
                     $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Delete" class="btn btn-danger btn-sm delete"><i class="far fa-trash-alt"></i> Delete</a>';
                     return $btn;
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('treatment');
+        return view('treatment', compact('treatment'));
     }
 
     /**
@@ -90,10 +90,7 @@ class TreatmentController extends Controller
         if (request()->ajax()) {
             $treatment = Treatment::find($id);
 
-            return response()->json([
-                'success' => true,
-                'data' => $treatment
-            ]);
+            return response()->json($treatment);
         }
     }
 
@@ -114,7 +111,8 @@ class TreatmentController extends Controller
 
         ]);
 
-        $treatment = Treatment::find($id);
+
+        $treatment = Treatment::findOrFail($id);
 
         $treatment['jenis_treatment'] = $request->jenis_treatment;
         $treatment['harga'] = $request->harga;
@@ -122,7 +120,7 @@ class TreatmentController extends Controller
         $treatment['qty'] = $request->qty;
         $treatment['subtotal'] = $request->harga * $request->qty;
 
-        $treatment->save();
+        $treatment->update();
         return response()->json(
             [
                 'success' => true,

@@ -132,13 +132,19 @@
                 type: 'GET',
                 headers: header
             },
+            order: [
+                [1, "asc"]
+            ],
             columns: [{
-                    data: 'id',
-                    name: 'id'
+                    data: 'DT_RowIndex',
+                    name: 'no',
+                    orderable: false,
+                    width: '3%'
                 },
                 {
                     data: 'jenis_treatment',
-                    name: 'jenis_treatment'
+                    name: 'jenis_treatment',
+                    width: '20%'
                 },
                 {
                     data: 'harga',
@@ -146,7 +152,8 @@
                 },
                 {
                     data: 'waktu_pengerjaan',
-                    name: 'waktu_pengerjaan'
+                    name: 'waktu_pengerjaan',
+                    width: '15%'
                 },
                 {
                     data: 'qty',
@@ -158,7 +165,8 @@
                 },
                 {
                     data: 'action',
-                    name: 'action'
+                    name: 'action',
+                    width: '13%'
                 }
             ]
         });
@@ -172,7 +180,7 @@
         $('#modal-form').modal('show');
     });
 
-    $('body').on('click', '.edit', function() {
+    $(document).on('click', '.edit', function() {
         var id = $(this).data('id');
         $.ajax({
             url: "{{url('api/treatment/edit')}}" + "/" + id,
@@ -180,6 +188,7 @@
             headers: header,
             dataType: "JSON",
             success: function(data) {
+                $('#id').val(data.id);
                 $('#jenis_treatment').val(data.jenis_treatment);
                 $('#harga').val(data.harga);
                 $('#waktu_pengerjaan').val(data.waktu_pengerjaan);
@@ -192,52 +201,55 @@
         })
     });
 
-    if ($("#form-treat").length > 0) {
-        var id = $(this).attr('id');
-        $("#form-treat").validate({
+    $(document).ready(function() {
 
-            submitHandler: function(form) {
+        if ($("#form-treat").length > 0) {
+            $("#form-treat").validate({
 
-                var actionType = $('#saveBtn').val();
-                $('#saveBtn').html('Saving..');
+                submitHandler: function(form) {
 
+                    var actionType = $('#saveBtn').val();
+                    $('#saveBtn').html('Saving..');
 
-                if ($('#saveBtn').val() == 'Add') {
-                    url = "{{ route('treatment.store') }}";
-                } else {
-                    url = "{{url('api/treatment/update')}}" + "/" + id;
-                }
-
-                $.ajax({
-                    data: $('#form-treat').serialize(),
-                    url: url,
-                    type: "POST",
-                    headers: header,
-                    dataType: 'json',
-                    success: function(data) { //jika berhasil 
-                        $('#form-treat').trigger("reset");
-                        $('#modal-form').modal('hide');
-                        $('#saveBtn').html('Submit');
-                        var oTable = $('#treat-table').dataTable();
-                        oTable.fnDraw(false); //reset datatable
-                        Swal.fire(
-                            'Done!',
-                            'Data Saved Successfully!',
-                            'success')
-                    },
-                    error: function(data) {
-                        console.log('Error:', data);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Something went wrong!',
-                        })
+                    if ($('#saveBtn').val() == 'Add') {
+                        url = "{{ route('treatment.store') }}";
+                        method = "POST";
+                    } else {
+                        var id = document.getElementById('id').value;
+                        url = "{{url('api/treatment/update')}}" + "/" + id;
+                        method = "PUT";
                     }
-                });
+                    $.ajax({
+                        data: $('#form-treat').serialize(),
+                        url: url,
+                        type: method,
+                        headers: header,
+                        dataType: 'json',
+                        success: function(data) { //jika berhasil 
+                            $('#form-treat').trigger("reset");
+                            $('#modal-form').modal('hide');
+                            $('#saveBtn').html('Submit');
+                            var oTable = $('#treat-table').dataTable();
+                            oTable.fnDraw(false); //reset datatable
+                            Swal.fire(
+                                'Done!',
+                                'Data Saved Successfully!',
+                                'success')
+                        },
+                        error: function(data) {
+                            console.log('Error:', data);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            })
+                        }
+                    });
 
-            }
-        })
-    }
+                }
+            })
+        };
+    });
 
     $(document).on('click', '.delete', function() {
         Swal.fire({

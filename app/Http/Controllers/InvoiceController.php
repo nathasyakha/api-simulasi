@@ -29,7 +29,7 @@ class InvoiceController extends Controller
             return DataTables::of($invoices)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Edit" class="edit btn btn-primary btn-sm edit"><i class="far fa-edit"></i> Edit</a>';
+                    $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Edit" class="edit btn btn-info btn-sm edit"><i class="far fa-edit"></i> Edit</a>';
                     $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Delete" class="btn btn-danger btn-sm delete"><i class="far fa-trash-alt"></i> Delete</a>';
 
 
@@ -38,7 +38,7 @@ class InvoiceController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('invoice.index', compact('treatments', 'users'));
+        return view('invoice', compact('treatments', 'users'));
     }
 
     /**
@@ -99,12 +99,6 @@ class InvoiceController extends Controller
      */
     public function show($id)
     {
-        $invoice = Invoice::findOrFail($id);
-
-        return response()->json([
-            'success' => true,
-            'data' => $invoice
-        ]);
     }
 
     /**
@@ -113,9 +107,11 @@ class InvoiceController extends Controller
      * @param  \App\Invoice  $invoice
      * @return \Illuminate\Http\Response
      */
-    public function edit(Invoice $invoice)
+    public function edit($id)
     {
-        //
+        $invoice = Invoice::findOrFail($id);
+
+        return response()->json($invoice);
     }
 
     /**
@@ -127,15 +123,31 @@ class InvoiceController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+
+            'treatment_id' => 'required',
+            'waktu_masuk' => 'required',
+            'status' => 'required'
+        ]);
         $invoice = Invoice::findOrFail($id);
 
-        $invoice->user_id = $request->user_id;
-        $invoice->treatment_id = $request->treatment_id;
-        $invoice->waktu_masuk = $request->waktu_masuk;
-        $invoice->total = $request->total;
-        $invoice->status = $request->status;
+        $invoices = auth()->user()->invoices()
+            ->leftJoin('treatments', 'invoices.treatment_id', '=', 'treatments.id')
+            ->select('invoices.*', 'treatments.subtotal')
+            ->get();
 
-        $invoice->save();
+        $res = 0;
+        foreach ($invoices as $invs) {
+            $res += $invs->subtotal;
+        }
+
+
+        $invoice['user_id'] = auth()->user()->id;
+        $invoice['treatment_id'] = $request->treatment_id;
+        $invoice['waktu_masuk'] = $request->waktu_masuk;
+        $invoice['total'] = $res;
+        $invoice['status'] = $request->status;
+        $invoice->update();
 
         return response()->json(
             [

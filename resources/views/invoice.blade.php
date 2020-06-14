@@ -33,6 +33,7 @@
                     <table id="invoice_table" class="table table-bordered table-hover">
                         <thead>
                             <tr>
+                                <th>No.</th>
                                 <th>Nama Customer</th>
                                 <th>Jenis Treatment</th>
                                 <th>Waktu Masuk</th>
@@ -51,7 +52,7 @@
 
 
 <!---addModal--->
-<div class="modal fade" id="modal-form" tabindex="1" role="dialog" aria-hidden="true" data-backdrop="static">
+<div class="modal fade" id="modal-form" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form id="form-invoice" method="post" class="form-horizontal" data-toggle="validator" enctype="multipart/form-data">
@@ -141,7 +142,16 @@
                 type: 'GET',
                 headers: header
             },
+            order: [
+                [1, "asc"]
+            ],
             columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'no',
+                    orderable: false,
+                    width: '3%',
+                },
+                {
                     data: 'username',
                     name: 'username'
                 },
@@ -163,7 +173,8 @@
                 },
                 {
                     data: 'action',
-                    name: 'action'
+                    name: 'action',
+                    width: '13%'
                 }
             ]
         });
@@ -185,6 +196,7 @@
             headers: header,
             dataType: "JSON",
             success: function(data) {
+                $('#id').val(data.id);
                 $('#user_id').val(data.user_id);
                 $('#treatment_id').val(data.treatment_id);
                 $('#waktu_masuk').val(data.waktu_masuk);
@@ -197,52 +209,56 @@
         })
     });
 
-    if ($("#form-invoice").length > 0) {
-        var id = $(this).attr('id');
-        $("#form-invoice").validate({
+    $(document).ready(function() {
+        if ($("#form-invoice").length > 0) {
+            $("#form-invoice").validate({
 
-            submitHandler: function(form) {
+                submitHandler: function(form) {
 
-                var actionType = $('#saveBtn').val();
-                $('#saveBtn').html('Saving..');
+                    var actionType = $('#saveBtn').val();
+                    $('#saveBtn').html('Saving..');
 
 
-                if ($('#saveBtn').val() == 'Add') {
-                    url = "{{ route('invoice.store') }}";
-                } else {
-                    url = "{{url('api/invoice/update')}}" + "/" + id;
-                }
-
-                $.ajax({
-                    data: $('#form-invoice').serialize(),
-                    url: url,
-                    type: "POST",
-                    headers: header,
-                    dataType: 'json',
-                    success: function(data) { //jika berhasil 
-                        $('#form-invoice').trigger("reset");
-                        $('#modal-form').modal('hide');
-                        $('#saveBtn').html('Submit');
-                        var oTable = $('#invoice_table').dataTable();
-                        oTable.fnDraw(false); //reset datatable
-                        Swal.fire(
-                            'Done!',
-                            'Data Saved Successfully!',
-                            'success')
-                    },
-                    error: function(data) {
-                        console.log('Error:', data);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Something went wrong!',
-                        })
+                    if ($('#saveBtn').val() == 'Add') {
+                        url = "{{ route('invoice.store') }}";
+                        method = "POST";
+                    } else {
+                        var id = document.getElementById('id').value;
+                        url = "{{url('api/invoice/update')}}" + "/" + id;
+                        method = "PUT";
                     }
-                });
 
-            }
-        })
-    }
+                    $.ajax({
+                        data: $('#form-invoice').serialize(),
+                        url: url,
+                        type: method,
+                        headers: header,
+                        dataType: 'json',
+                        success: function(data) { //jika berhasil 
+                            $('#form-invoice').trigger("reset");
+                            $('#modal-form').modal('hide');
+                            $('#saveBtn').html('Submit');
+                            var oTable = $('#invoice_table').dataTable();
+                            oTable.fnDraw(false); //reset datatable
+                            Swal.fire(
+                                'Done!',
+                                'Data Saved Successfully!',
+                                'success')
+                        },
+                        error: function(data) {
+                            console.log('Error:', data);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            })
+                        }
+                    });
+
+                }
+            })
+        }
+    });
 
     $(document).on('click', '.delete', function() {
         Swal.fire({
