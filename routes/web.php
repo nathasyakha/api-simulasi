@@ -17,13 +17,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('register', function () {
-    return view('auth/register');
-});
-
 Route::get('login', function () {
     return view('auth/login');
 });
+Route::post('login', 'UserController@login')->name('login');
+// Registration Routes...
+Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+Route::post('register', 'Auth\RegisterController@register');
 
 // Password Reset Routes...
 Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
@@ -31,8 +31,7 @@ Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail'
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
-Route::post('login', 'UserController@login')->name('login');
-Route::post('register', 'UserController@register')->name('register');
+
 Route::get('logout', 'UserController@logout');
 
 Route::get('treatment', 'TreatmentController@index')->name('treatment');

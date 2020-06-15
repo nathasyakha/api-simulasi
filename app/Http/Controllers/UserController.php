@@ -16,40 +16,10 @@ class UserController extends Controller
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
-            $success['token'] = $user->createToken('deekey')->accessToken;
             return route('home');
         } else {
             return back()->with('message', 'Account is not Valid!');
         }
-    }
-
-    public function register(Request $request)
-    {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'email' => 'required|email|unique:users,email',
-                'username' => 'required|unique:users',
-                'password' => 'required|min:6',
-                'address' => 'required',
-                'city' => 'required',
-                'phone_number' => 'required|min:7|max:15',
-                'avatar' => 'required'
-            ]
-        );
-        if ($validator->fails()) {
-            $response = [
-                'success' => false,
-                'message' => 'Validation Error', $validator->errors(),
-            ];
-            return response()->json($response, 404);
-        }
-        $input = $request->all();
-        $input['password'] = bcrypt($input['password']);
-        $user = User::create($input);
-        $success['username'] = $user->username;
-        $success['token'] = $user->createToken('deekey')->accessToken;
-        return view('auth.login');
     }
 
     public function details()
