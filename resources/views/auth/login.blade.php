@@ -23,7 +23,7 @@
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="login-logo">
-            <b>Admin</b>LTE</a>
+            <b>DEEKEY&reg</b>
         </div>
         <!-- /.login-logo -->
         <div class="card">

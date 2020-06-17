@@ -51,7 +51,7 @@
 </section>
 
 
-<!---addModal--->
+<!---Modal--->
 <div class="modal fade" id="modal-form" tabindex="1" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -125,8 +125,10 @@
 
     $(document).ready(function() {
         $('#treat-table').DataTable({
-            proccessing: true,
+            proccessing: false,
             serverSide: true,
+            responsive: true,
+            autoWidth: false,
             ajax: {
                 url: "{{route('treatment.index')}}",
                 type: 'GET',
@@ -166,7 +168,7 @@
                 {
                     data: 'action',
                     name: 'action',
-                    width: '13%'
+                    width: '15%'
                 }
             ]
         });

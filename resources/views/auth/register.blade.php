@@ -23,7 +23,7 @@
 <body class="hold-transition register-page">
     <div class="register-box">
         <div class="register-logo">
-            <b>Admin</b>LTE</a>
+            <b><b>DEEKEY&reg</b>
         </div>
 
         <div class="card">

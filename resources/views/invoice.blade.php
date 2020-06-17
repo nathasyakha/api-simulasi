@@ -135,8 +135,10 @@
 
     $(document).ready(function() {
         $('#invoice_table').DataTable({
-            proccessing: true,
+            proccessing: false,
             serverSide: true,
+            responsive: true,
+            autoWidth: false,
             ajax: {
                 url: "{{route('invoice.index')}}",
                 type: 'GET',
@@ -174,7 +176,7 @@
                 {
                     data: 'action',
                     name: 'action',
-                    width: '13%'
+                    width: '15%'
                 }
             ]
         });
