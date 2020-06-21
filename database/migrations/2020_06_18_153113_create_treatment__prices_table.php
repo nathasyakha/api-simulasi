@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateInvoicesTable extends Migration
+class CreateTreatmentPricesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,15 @@ class CreateInvoicesTable extends Migration
      */
     public function up()
     {
-        Schema::create('invoices', function (Blueprint $table) {
+        Schema::create('treatment__prices', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
-            $table->integer('treatment_id')->unsigned();
-            $table->string('waktu_masuk');
-            $table->float('total');
-            $table->string('status');
+            $table->integer('treatment_type_id')->unsigned()->index();
+            $table->integer('harga');
+            $table->integer('user_id')->unsigned()->index();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('treatment_id')->references('id')->on('treatments')->onDelete('cascade');
+            $table->foreign('treatment_type_id')->references('id')->on('treatment_types')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
@@ -34,6 +32,6 @@ class CreateInvoicesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('invoices');
+        Schema::dropIfExists('treatment__prices');
     }
 }

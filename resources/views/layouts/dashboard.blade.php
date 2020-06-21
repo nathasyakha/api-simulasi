@@ -32,7 +32,7 @@
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="../../index3.html" class="nav-link">Home</a>
+                    <a href="{{route('home')}}" class="nav-link">Home</a>
                 </li>
             </ul>
 
@@ -73,16 +73,28 @@
                         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
                         <li class="nav-item">
-                            <a href="{{route('treatment')}}" class="nav-link">
+                            <a href="{{route('treattype')}}" class="nav-link">
                                 <i class="nav-icon fas fa-shoe-prints"></i>
                                 <p>
-                                    Treatment
+                                    Treatment Type
                                 </p>
                             </a>
                         <li class="nav-item">
-                            <a href="{{route('invoice')}}" class="nav-link">
+                            <a href="{{route('treatprice')}}" class="nav-link">
+                                <i class="nav-icon fas fa-coins"></i>
+                                <p>Treatment Price</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{route('transact')}}" class="nav-link">
                                 <i class="nav-icon fas fa-file-invoice"></i>
-                                <p>Invoice</p>
+                                <p>Transact</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{route('detail_transact')}}" class="nav-link">
+                                <i class="nav-icon fas fa-money-check"></i>
+                                <p>Detail Transact</p>
                             </a>
                         </li>
                     </ul>

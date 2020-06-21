@@ -90,7 +90,7 @@
             const data = {
                 "grant_type": "password",
                 "client_id": "2",
-                "client_secret": "SxjWhiNv7WDPNULP3L4xe3SDPqf8VcHyFK4o3unL",
+                "client_secret": "hpfOOKQmOI5tlFmX6AOyvlhhNRCXY6rN2pB4SrTt",
                 "username": $('#email').val(),
                 "password": $('#password').val(),
                 "scope": ""

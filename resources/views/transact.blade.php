@@ -9,8 +9,8 @@
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="{{url('/home')}}">Home</a></li>
-                    <li class="breadcrumb-item active">Treatment</li>
+                    <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>
+                    <li class="breadcrumb-item active">Transaction</li>
                 </ol>
             </div>
         </div>
@@ -34,11 +34,16 @@
                         <thead>
                             <tr>
                                 <th>No.</th>
-                                <th>Jenis Treatment</th>
+                                <th>User ID</th>
+                                <th>Amount</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
                                 <th>Harga</th>
-                                <th>Waktu Pengerjaan</th>
+                                <th>Jenis Treatment</th>
                                 <th>Quantity</th>
                                 <th>Subtotal</th>
+                                <th>Total</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -68,25 +73,41 @@
                 <div class="modal-body">
                     <input type="hidden" id="id" name="id">
                     <div class="form-group">
-                        <label for="jenis_treatment" class="col-md-3 control-label">Jenis Treatment</label>
+                        <label for="start_date" class="col-md-3 control-label">Start Date</label>
                         <div class="col-md-6">
-                            <input type="text" id="jenis_treatment" name="jenis_treatment" class="form-control" autofocus required>
+                            <input type="date" id="start_date" name="start_date" class="form-control" autofocus required>
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="harga" class="col-md-3 control-label">Harga</label>
+                        <label for="end_date" class="col-md-3 control-label">End Date</label>
                         <div class="col-md-6">
-                            <input type="text" id="harga" name="harga" class="form-control" autofocus required>
+                            <input type="date" id="end_date" name="end_date" class="form-control" autofocus required>
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="waktu_pengerjaan" class="col-md-3 control-label">Waktu Pengerjaan</label>
+                        <label for="status" class="col-md-3 control-label">Status</label>
                         <div class="col-md-6">
-                            <input type="text" id="waktu_pengerjaan" name="waktu_pengerjaan" class="form-control" autofocus required>
+                            <input type="text" id="status" name="status" class="form-control" autofocus required>
+                            <span class="help-block with-errors"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="treatment_price_id" class="col-md-3 control-label">Treatment Price ID</label>
+                        <div class="col-md-6">
+                            <input type="text" id="treatment_price_id" name="treatment_price_id" class="form-control" autofocus required>
+                            <span class="help-block with-errors"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="treatment_type_id" class="col-md-3 control-label">Treatment Type ID </label>
+                        <div class="col-md-6">
+                            <input type="text" id="treatment_type_id" name="treatment_type_id" class="form-control" autofocus required>
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
@@ -130,7 +151,7 @@
             responsive: true,
             autoWidth: false,
             ajax: {
-                url: "{{route('treatment.index')}}",
+                url: "{{route('transact.index')}}",
                 type: 'GET',
                 headers: header
             },
@@ -144,26 +165,44 @@
                     width: '3%'
                 },
                 {
-                    data: 'jenis_treatment',
-                    name: 'jenis_treatment',
-                    width: '20%'
+                    data: 'user_id',
+                    name: 'user_id',
+                },
+                {
+                    data: 'amount',
+                    name: 'amount'
+                },
+                {
+                    data: 'start_date',
+                    name: 'start_date',
+                },
+                {
+                    data: 'end_date',
+                    name: 'end_date',
+                },
+                {
+                    data: 'status',
+                    name: 'status',
                 },
                 {
                     data: 'harga',
-                    name: 'harga'
+                    name: 'harga',
                 },
                 {
-                    data: 'waktu_pengerjaan',
-                    name: 'waktu_pengerjaan',
-                    width: '15%'
+                    data: 'treatment_type_id',
+                    name: 'treatment_type_id',
                 },
                 {
                     data: 'qty',
-                    name: 'qty'
+                    name: 'qty',
                 },
                 {
-                    data: 'subtotal',
-                    name: 'subtotal'
+                    data: 'price',
+                    name: 'price',
+                },
+                {
+                    data: 'total',
+                    name: 'total',
                 },
                 {
                     data: 'action',
@@ -178,25 +217,27 @@
         $('#saveBtn').val("Add");
         $('#id').val('');
         $('#form-treat').trigger("reset");
-        $('#modaltitle').html("Add New Treatment");
+        $('#modaltitle').html("Add New Transaction");
         $('#modal-form').modal('show');
     });
 
     $(document).on('click', '.edit', function() {
         var id = $(this).data('id');
         $.ajax({
-            url: "{{url('api/treatment/edit')}}" + "/" + id,
+            url: "{{url('api/transact/edit')}}" + "/" + id,
             type: "GET",
             headers: header,
             dataType: "JSON",
             success: function(data) {
                 $('#id').val(data.id);
-                $('#jenis_treatment').val(data.jenis_treatment);
-                $('#harga').val(data.harga);
-                $('#waktu_pengerjaan').val(data.waktu_pengerjaan);
+                $('#start_date').val(data.start_date);
+                $('#end_date').val(data.end_date);
+                $('#status').val(data.status);
+                $('#treatment_price_id').val(data.treatment_price_id);
+                $('#treatment_type_id').val(data.treatment_type_id);
                 $('#qty').val(data.qty);
 
-                $('#modaltitle').html("Edit Treatment");
+                $('#modaltitle').html("Edit Transaction");
                 $('#saveBtn').val("Edit");
                 $('#modal-form').modal('show');
             }
@@ -214,11 +255,11 @@
                     $('#saveBtn').html('Saving..');
 
                     if ($('#saveBtn').val() == 'Add') {
-                        url = "{{ route('treatment.store') }}";
+                        url = "{{ route('transact.store') }}";
                         method = "POST";
                     } else {
                         var id = document.getElementById('id').value;
-                        url = "{{url('api/treatment/update')}}" + "/" + id;
+                        url = "{{url('api/transact/update')}}" + "/" + id;
                         method = "PUT";
                     }
                     $.ajax({
@@ -267,7 +308,7 @@
                 var id = $(this).data('id');
                 $.ajax({
                     type: "DELETE",
-                    url: "{{ url('api/treatment/delete') }}" + '/' + id,
+                    url: "{{ url('api/transact/delete') }}" + '/' + id,
                     headers: header,
                     success: function(data) {
                         var oTable = $('#treat-table').dataTable();

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTreatmentsTable extends Migration
+class CreateTreatmentTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,9 @@ class CreateTreatmentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('treatments', function (Blueprint $table) {
+        Schema::create('treatment_types', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('jenis_treatment');
-            $table->float('harga');
-            $table->integer('waktu_pengerjaan');
-            $table->integer('qty');
-            $table->float('subtotal');
+            $table->string('nama');
             $table->timestamps();
         });
     }
@@ -31,6 +27,6 @@ class CreateTreatmentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('treatments');
+        Schema::dropIfExists('treatment_types');
     }
 }

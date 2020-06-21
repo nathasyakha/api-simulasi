@@ -27,15 +27,27 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::delete('user/delete', 'UserController@destroy')->name('user.destroy');
     Route::post('logout', 'UserController@logout');
 
-    Route::get('treatment', 'TreatmentController@index')->name('treatment.index');
-    Route::get('treatment/edit/{id}', 'TreatmentController@edit')->name('treatment.edit');
-    Route::post('treatment', 'TreatmentController@store')->name('treatment.store');
-    Route::put('treatment/update/{id}', 'TreatmentController@update')->name('treatment.update');
-    Route::delete('treatment/delete/{id}', 'TreatmentController@destroy')->name('treatment.destroy');
+    Route::get('treatment_price', 'TreatmentPriceController@index')->name('treatprice.index');
+    Route::get('treatment_price/edit/{id}', 'TreatmentPriceController@edit')->name('treatprice.edit');
+    Route::post('treatment_price', 'TreatmentPriceController@store')->name('treatprice.store');
+    Route::put('treatment_price/update/{id}', 'TreatmentPriceController@update')->name('treatprice.update');
+    Route::delete('treatment_price/delete/{id}', 'TreatmentPriceController@destroy')->name('treatprice.destroy');
 
-    Route::get('invoice', 'InvoiceController@index')->name('invoice.index');
-    Route::get('invoice/edit/{id}', 'InvoiceController@edit')->name('invoice.edit');
-    Route::post('invoice', 'InvoiceController@store')->name('invoice.store');
-    Route::put('invoice/update/{id}', 'InvoiceController@update')->name('invoice.update');
-    Route::delete('invoice/delete/{id}', 'InvoiceController@destroy')->name('invoice.destroy');
+    Route::get('treatment_type', 'TreatmentTypeController@index')->name('treattype.index');
+    Route::get('treatment_type/edit/{id}', 'TreatmentTypeController@edit')->name('treattype.edit');
+    Route::post('treatment_type', 'TreatmentTypeController@store')->name('treattype.store');
+    Route::put('treatment_type/update/{id}', 'TreatmentTypeController@update')->name('treattype.update');
+    Route::delete('treatment_type/delete/{id}', 'TreatmentTypeController@destroy')->name('treattype.destroy');
+
+    Route::get('transact', 'TransactController@index')->name('transact.index');
+    Route::get('transact/edit/{id}', 'TransactController@edit')->name('transact.edit');
+    Route::post('transact', 'TransactController@store')->name('transact.store');
+    Route::put('transact/update/{id}', 'TransactController@update')->name('transact.update');
+    Route::delete('transact/delete/{id}', 'TransactController@destroy')->name('transact.destroy');
+
+    Route::get('detail_transact', 'DetailTransactController@index')->name('detail_transact.index');
+    Route::get('detail_transact/edit/{id}', 'DetailTransactController@edit')->name('detail_transact.edit');
+    Route::post('detail_transact', 'DetailTransactController@store')->name('detail_transact.store');
+    Route::put('detail_transact/update/{id}', 'DetailTransactController@update')->name('detail_transact.update');
+    Route::delete('detail_transact/delete/{id}', 'DetailTransactController@destroy')->name('detail_transact.destroy');
 });
